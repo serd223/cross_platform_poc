@@ -1,7 +1,7 @@
 use framebrush::{Canvas, Color};
 
-pub const WIDTH: usize = 640;
-pub const HEIGHT: usize = 360;
+const CANVAS_WIDTH: usize = 320;
+const CANVAS_HEIGHT: usize = 180;
 
 pub trait GameColor {
     fn from_rgbau32(rgba: u32) -> u32;
@@ -58,7 +58,7 @@ impl Game {
         let red = Rgba(C::from_rgbau32(0xff0000ff));
         let bg = Rgba(C::from_rgbau32(0x282c34ff));
 
-        let mut canvas = Canvas::new(buf, (width, height), (320, 180));
+        let mut canvas = Canvas::new(buf, (width, height), (CANVAS_WIDTH, CANVAS_HEIGHT));
         canvas.clear(bg);
         canvas.rect(10, 20, 50, 20, &red);
     }

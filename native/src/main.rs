@@ -1,4 +1,4 @@
-use game::{Game, GameColor, HEIGHT, WIDTH};
+use game::{Game, GameColor};
 use minifb::{Window, WindowOptions};
 
 struct ARgbColor {}
@@ -11,6 +11,9 @@ impl GameColor for ARgbColor {
         ret
     }
 }
+
+const WIDTH: usize = 640;
+const HEIGHT: usize = 360;
 
 pub fn main() {
     let (mut width, mut height) = (WIDTH, HEIGHT);

@@ -1,5 +1,5 @@
 const WIDTH = 640;
-const HEIGHT = 480;
+const HEIGHT = 360;
 (async () => {
   
   const wasm = await WebAssembly.instantiateStreaming(fetch("web.wasm"));
