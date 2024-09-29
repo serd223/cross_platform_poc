@@ -33,9 +33,13 @@ pub fn main() {
     while window.is_open() {
         {
             let size = window.get_size();
-            if !((width, height) == size) {
+            if (width, height) != size {
                 (width, height) = size;
-                buffer.resize(size.0 * size.1, 0);
+                // If the user decreases the size of the window, keep the buffer's capacity the same.
+                // This way we don't need to allocate memory if the user increases the size of the window but it's still smaller than our buffer.
+                if buffer.len() < size.0 * size.1 {
+                    buffer.resize(size.0 * size.1, 0);
+                }
             }
         }
         game.frame::<ARgbColor>(buffer.as_mut_slice(), width, height, 0.);
