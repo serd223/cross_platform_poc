@@ -1,12 +1,13 @@
 # Build Instructions
 
-# Native
 ## Prerequisites
+### Native
 On Linux: (Reuqired by the `minifb` crate)
 ```console
 sudo apt install libxkbcommon-dev libwayland-cursor0 libwayland-dev
 ```
 
+### Wasm
 For the wasm version add the `wasm32-unknown-unknown` target if you don't have it:
 ```console
 rustup target add wasm32-unknown-unknown
