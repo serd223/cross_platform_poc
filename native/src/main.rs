@@ -45,7 +45,7 @@ pub fn main() {
                 }
             }
         }
-        game.frame::<ARgbColor>(buffer.as_mut_slice(), width, height, 0.);
+        game::frame::<ARgbColor>(&mut game, buffer.as_mut_slice(), width, height, 0.);
 
         window.update_with_buffer(&buffer, width, height).unwrap();
     }

@@ -3,7 +3,6 @@ const HEIGHT = 360;
 (async () => {
   
   const wasm = await WebAssembly.instantiateStreaming(fetch("web.wasm"));
-  
   const screenCanvas = document.getElementById("screen");
   if (screenCanvas === null) throw new Error("No canvas named 'screen' found.")
   screenCanvas.width = WIDTH;
@@ -16,15 +15,17 @@ const HEIGHT = 360;
   let prevTime = 0;
   let frameWasm = wasm.instance.exports.frame;
   let allocateImage = wasm.instance.exports.allocate_image;
+  let allocateGame = wasm.instance.exports.allocate_game;
   let wasmMemory = wasm.instance.exports.memory;
   const imageDataPtr = allocateImage(WIDTH, HEIGHT);
+  const gameDataPtr = allocateGame();
 
   const frame = (time) => {
     let delta = (time - prevTime) / 1000; // Millis to secs
     prevTime = time;
     
     //logic
-    frameWasm(imageDataPtr, WIDTH, HEIGHT, delta);
+    frameWasm(gameDataPtr, imageDataPtr, WIDTH, HEIGHT, delta);
     
     const data = new Uint8ClampedArray(wasmMemory.buffer, imageDataPtr, WIDTH * HEIGHT * 4);
     ctx.putImageData(new ImageData(data, WIDTH), 0, 0);  

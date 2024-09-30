@@ -2,8 +2,6 @@ use std::{mem, ptr::slice_from_raw_parts_mut};
 
 use game::{Game, GameColor};
 
-static mut GAME: Game = Game::const_default();
-
 struct ABgrColor {}
 
 impl GameColor for ABgrColor {
@@ -25,9 +23,24 @@ pub extern "C" fn allocate_image(width: usize, height: usize) -> *mut u32 {
 }
 
 #[no_mangle]
-pub extern "C" fn frame(image_ptr: *mut u32, width: usize, height: usize, delta: f32) {
+pub extern "C" fn allocate_game() -> *mut Game {
+    let mut g = Game::default();
+    let ret: *mut Game = &mut g;
+    mem::forget(g);
+    ret
+}
+
+#[no_mangle]
+pub extern "C" fn frame(
+    g_ptr: *mut Game,
+    image_ptr: *mut u32,
+    width: usize,
+    height: usize,
+    delta: f32,
+) {
     let image_data = slice_from_raw_parts_mut(image_ptr, width * height);
+    let g = unsafe { &mut (*g_ptr) };
     unsafe {
-        GAME.frame::<ABgrColor>(&mut (*image_data), width, height, delta);
+        game::frame::<ABgrColor>(g, &mut (*image_data), width, height, delta);
     }
 }
