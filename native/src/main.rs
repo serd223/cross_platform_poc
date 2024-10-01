@@ -1,5 +1,7 @@
-use game::{Game, GameColor};
-use minifb::{Window, WindowOptions};
+use std::{collections::HashMap, time::Instant};
+
+use game::{Controls, Game, GameColor};
+use minifb::{Key, Window, WindowOptions};
 
 struct ARgbColor {}
 
@@ -14,8 +16,14 @@ impl GameColor for ARgbColor {
 
 const WIDTH: usize = 640;
 const HEIGHT: usize = 360;
-
 pub fn main() {
+    let controls = HashMap::from([
+        (Key::W, Controls::SnakeUp),
+        (Key::A, Controls::SnakeLeft),
+        (Key::S, Controls::SnakeDown),
+        (Key::D, Controls::SnakeRight),
+        (Key::Escape, Controls::Pause),
+    ]);
     let (mut width, mut height) = (WIDTH, HEIGHT);
     let mut buffer: Vec<u32> = vec![0; width * height];
     let mut game = Game::default();
@@ -31,9 +39,22 @@ pub fn main() {
     .unwrap_or_else(|e| {
         panic!("{}", e);
     });
+    let keys_down = &mut [false; Controls::COUNT];
 
-    window.set_target_fps(60);
+    let mut prev_time = Instant::now();
+    window.set_target_fps(144);
     while window.is_open() {
+        let now = Instant::now();
+        let delta = now.duration_since(prev_time).as_secs_f32();
+        prev_time = now;
+        for (&key, &control) in controls.iter() {
+            if window.is_key_down(key) {
+                keys_down[control as usize] = true;
+            }
+            if window.is_key_released(key) {
+                keys_down[control as usize] = false;
+            }
+        }
         {
             let size = window.get_size();
             if (width, height) != size {
@@ -45,7 +66,14 @@ pub fn main() {
                 }
             }
         }
-        game::frame::<ARgbColor>(&mut game, buffer.as_mut_slice(), width, height, 0.);
+        game::frame::<ARgbColor>(
+            &mut game,
+            buffer.as_mut_slice(),
+            width,
+            height,
+            delta,
+            keys_down,
+        );
 
         window.update_with_buffer(&buffer, width, height).unwrap();
     }
