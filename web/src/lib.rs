@@ -45,25 +45,12 @@ pub extern "C" fn frame(
     width: usize,
     height: usize,
     delta: f32,
-    keys_down_ptr: *mut u8,
+    keys_down_ptr: *mut bool,
 ) {
     let image_data = slice_from_raw_parts_mut(image_ptr, width * height);
     let keys_down = slice_from_raw_parts_mut(keys_down_ptr, Controls::COUNT);
-    let keys_down: Vec<bool> = unsafe {
-        (&(*keys_down))
-            .iter()
-            .map(|&n| if n > 0 { true } else { false })
-            .collect()
-    };
     let g = unsafe { &mut (*g_ptr) };
     unsafe {
-        game::frame::<ABgrColor>(
-            g,
-            &mut (*image_data),
-            width,
-            height,
-            delta,
-            keys_down.as_slice(),
-        );
+        game::frame::<ABgrColor>(g, &mut (*image_data), width, height, delta, &(*keys_down));
     }
 }
