@@ -15,6 +15,11 @@ impl GameColor for ABgrColor {
 }
 
 #[no_mangle]
+pub extern "C" fn get_control_count() -> usize {
+    Controls::COUNT
+}
+
+#[no_mangle]
 pub extern "C" fn allocate_image(width: usize, height: usize) -> *mut u32 {
     let mut v: Vec<u32> = Vec::with_capacity(width * height);
     let ret = v.as_mut_ptr();

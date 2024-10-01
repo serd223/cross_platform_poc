@@ -1,6 +1,5 @@
 const WIDTH = 640;
 const HEIGHT = 360;
-const CONTROL_COUNT = 5;
 
 (async () => {
   
@@ -19,13 +18,15 @@ const CONTROL_COUNT = 5;
   let allocateImage = wasm.instance.exports.allocate_image;
   let allocateGame = wasm.instance.exports.allocate_game;
   let allocateControls = wasm.instance.exports.allocate_controls;
+  let controlCountGetter = wasm.instance.exports.get_control_count;
+  const controlCount = controlCountGetter();
   
   let wasmMemory = wasm.instance.exports.memory;
   
   const imageDataPtr = allocateImage(WIDTH, HEIGHT);
   const keysDownPtr = allocateControls();
   const gameDataPtr = allocateGame();
-  var keysDown =    new Array(CONTROL_COUNT);
+  var keysDown =    new Array(controlCount);
   const controls  = {
     0: 87, // W
     1: 83, // S
@@ -35,7 +36,7 @@ const CONTROL_COUNT = 5;
   };
 
   addEventListener("keyup", (event) => {
-    for (var i = 0; i < CONTROL_COUNT; i++) {
+    for (var i = 0; i < controlCount; i++) {
       if (event.keyCode == controls[i]) {
         keysDown[i] = false;
       }
@@ -44,7 +45,7 @@ const CONTROL_COUNT = 5;
 
   addEventListener("keydown", (event) => {
     // console.log('KeyDown: ', event.keyCode);
-    for (var i = 0; i < CONTROL_COUNT; i++) {
+    for (var i = 0; i < controlCount; i++) {
       if (event.keyCode == controls[i]) {
         keysDown[i] = true
       }
@@ -56,7 +57,7 @@ const CONTROL_COUNT = 5;
     prevTime = time;
     {
       let view = new DataView(wasmMemory.buffer);
-      for (var i = 0; i < CONTROL_COUNT; i++) {
+      for (var i = 0; i < controlCount; i++) {
         view.setUint8(keysDownPtr + i, keysDown[i])
       }
     }
