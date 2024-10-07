@@ -1,3 +1,9 @@
+# Structure
+ - The `web` and `native` folders contain platform specific glue code that will be mostly untouched while developing your app.
+ - Keybindings are specified in platform code so you will need to specify your keybindings in both `web` and `native`.
+ - App logic code is inside the `app` folder, you will be working with this code while developing your app.
+
+
 # Build Instructions
 
 ## Prerequisites
