@@ -51,11 +51,22 @@ pub extern "C" fn frame(
     height: usize,
     delta: f32,
     keys_down_ptr: *mut bool,
+    mouse_x: f32,
+    mouse_y: f32,
 ) {
     let image_data = slice_from_raw_parts_mut(image_ptr, width * height);
     let keys_down = slice_from_raw_parts_mut(keys_down_ptr, Control::COUNT);
     let g = unsafe { &mut (*g_ptr) };
     unsafe {
-        app::frame::<ABgrColor>(g, &mut (*image_data), width, height, delta, &(*keys_down));
+        app::frame::<ABgrColor>(
+            g,
+            &mut (*image_data),
+            width,
+            height,
+            delta,
+            &(*keys_down),
+            mouse_x,
+            mouse_y,
+        );
     }
 }

@@ -48,6 +48,20 @@ pub fn main() {
         let now = Instant::now();
         let delta = now.duration_since(prev_time).as_secs_f32();
         prev_time = now;
+
+        // Resize buffer
+        let (scrw, scrh) = window.get_size();
+        if width * height != scrw * scrh {
+            width = scrw;
+            height = scrh;
+            // If the user decreases the size of the window, keep the buffer's capacity the same.
+            // This way we don't need to allocate memory if the user increases the size of the window but it's still smaller than our buffer.
+            if buffer.len() < scrw * scrh {
+                buffer.resize(scrw * scrh, 0);
+            }
+        }
+
+        // Controls
         for (&key, &control) in controls.iter() {
             if window.is_key_down(key) {
                 keys_down[control as usize] = true;
@@ -56,17 +70,12 @@ pub fn main() {
                 keys_down[control as usize] = false;
             }
         }
-        {
-            let size = window.get_size();
-            if (width, height) != size {
-                (width, height) = size;
-                // If the user decreases the size of the window, keep the buffer's capacity the same.
-                // This way we don't need to allocate memory if the user increases the size of the window but it's still smaller than our buffer.
-                if buffer.len() < size.0 * size.1 {
-                    buffer.resize(size.0 * size.1, 0);
-                }
-            }
-        }
+        keys_down[Control::MouseLeft as usize] = window.get_mouse_down(minifb::MouseButton::Left);
+        let (mouse_x, mouse_y) = window
+            .get_mouse_pos(minifb::MouseMode::Clamp)
+            .unwrap_or((0., 0.));
+
+        // Logic
         app::frame::<ARgbColor>(
             &mut game,
             buffer.as_mut_slice(),
@@ -74,8 +83,11 @@ pub fn main() {
             height,
             delta,
             keys_down,
+            mouse_x,
+            mouse_y,
         );
 
+        // Render
         window.update_with_buffer(&buffer, width, height).unwrap();
     }
 }

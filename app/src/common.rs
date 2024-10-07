@@ -22,10 +22,11 @@ pub enum Control {
     Right,
     Pause,
     Restart,
+    MouseLeft,
 }
 
 impl Control {
-    pub const COUNT: usize = 6;
+    pub const COUNT: usize = 7;
 }
 
 pub trait GameColor {

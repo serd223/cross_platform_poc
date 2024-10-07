@@ -49,6 +49,8 @@ pub fn frame<C: GameColor>(
     height: usize,
     delta: f32,
     keys_down: &[bool],
+    mouse_pos_x: f32,
+    mouse_pos_y: f32,
 ) {
     let bg = Rgba(C::from_rgbau32(0x282c34ff));
 
@@ -70,6 +72,10 @@ pub fn frame<C: GameColor>(
     }
     if keys_down[Control::Restart as usize] {
         g.square = Square::default();
+    }
+    if keys_down[Control::MouseLeft as usize] {
+        g.square.pos.x = mouse_pos_x * CANVAS_WIDTH as f32 / width as f32;
+        g.square.pos.y = mouse_pos_y * CANVAS_HEIGHT as f32 / height as f32;
     }
     g.prev_keys_down.copy_from_slice(keys_down);
 

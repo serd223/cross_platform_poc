@@ -30,7 +30,9 @@ const HEIGHT = 360;
   for (var i = 0; i < controlCount; i++) {
     keysDown[i] = false;
   }
-  let controls = {};
+  var mouse_x = 0;
+  var mouse_y = 0;
+  var controls = {};
   for (var i = 0; i < controlCount; i++) {
     controls[i] = 0;
   }
@@ -40,6 +42,7 @@ const HEIGHT = 360;
   controls[3] = 68; // D
   controls[4] = 27; // Escape
   controls[5] = 32; // Space
+  
   addEventListener("keyup", (event) => {
     for (var i = 0; i < controlCount; i++) {
       if (event.keyCode == controls[i]) {
@@ -49,13 +52,32 @@ const HEIGHT = 360;
   })
 
   addEventListener("keydown", (event) => {
-    console.log('KeyDown: ', event.keyCode);
+    console.log("KeyDown: ", event.keyCode);
     for (var i = 0; i < controlCount; i++) {
       if (event.keyCode == controls[i]) {
         keysDown[i] = true
       }
     }
   });
+  
+  addEventListener("mousemove", (event) => {
+    mouse_x = event.clientX;
+    mouse_y = event.clientY;
+  })
+  addEventListener("mousedown", (event) => {
+    console.log("MouseDown: ", event.buttons)
+    if (event.buttons == 1) {
+      keysDown[6] = true;
+    } else {
+      keysDown[6] = false;
+    }
+  })
+  addEventListener("mouseup", (event) => {
+    console.log("MouseUp: ", event.buttons)
+    if (event.buttons == 0) {
+      keysDown[6] = false;
+    }
+  })
   
   const frame = (time) => {
     let delta = (time - prevTime) / 1000; // Millis to secs
@@ -66,7 +88,7 @@ const HEIGHT = 360;
         view.setUint8(keysDownPtr + i, keysDown[i])
       }
     }
-    frameWasm(gameDataPtr, imageDataPtr, WIDTH, HEIGHT, delta, keysDownPtr);
+    frameWasm(gameDataPtr, imageDataPtr, WIDTH, HEIGHT, delta, keysDownPtr, mouse_x, mouse_y);
     
     const data = new Uint8ClampedArray(wasmMemory.buffer, imageDataPtr, WIDTH * HEIGHT * 4);
     ctx.putImageData(new ImageData(data, WIDTH), 0, 0);  
