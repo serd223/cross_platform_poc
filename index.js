@@ -27,7 +27,7 @@ const HEIGHT = 360;
   
   const imageDataPtr = allocateImage(WIDTH, HEIGHT);
   const keysDownPtr = allocateControls();
-  const gameDataPtr = allocateApp();
+  const appDataPtr = allocateApp();
   var keysDown = new Array(controlCount);
   for (var i = 0; i < controlCount; i++) {
     keysDown[i] = false;
@@ -104,7 +104,7 @@ const HEIGHT = 360;
     if (offset_mouse_y < 0) {
       offset_mouse_y = 0
     }
-    frameWasm(gameDataPtr, imageDataPtr, WIDTH, HEIGHT, delta, keysDownPtr, offset_mouse_x, offset_mouse_y);
+    frameWasm(appDataPtr, imageDataPtr, WIDTH, HEIGHT, delta, keysDownPtr, offset_mouse_x, offset_mouse_y);
     
     const data = new Uint8ClampedArray(wasmMemory.buffer, imageDataPtr, WIDTH * HEIGHT * 4);
     ctx.putImageData(new ImageData(data, WIDTH), 0, 0);  
