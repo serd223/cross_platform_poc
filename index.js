@@ -18,7 +18,7 @@ const HEIGHT = 360;
   let prevTime = 0;
   let frameWasm = wasm.instance.exports.frame;
   let allocateImage = wasm.instance.exports.allocate_image;
-  let allocateGame = wasm.instance.exports.allocate_game;
+  let allocateApp = wasm.instance.exports.allocate_app;
   let allocateControls = wasm.instance.exports.allocate_controls;
   let controlCountGetter = wasm.instance.exports.get_control_count;
   const controlCount = controlCountGetter();
@@ -27,7 +27,7 @@ const HEIGHT = 360;
   
   const imageDataPtr = allocateImage(WIDTH, HEIGHT);
   const keysDownPtr = allocateControls();
-  const gameDataPtr = allocateGame();
+  const gameDataPtr = allocateApp();
   var keysDown = new Array(controlCount);
   for (var i = 0; i < controlCount; i++) {
     keysDown[i] = false;

@@ -1,10 +1,10 @@
 use std::{mem, ptr::slice_from_raw_parts_mut};
 
-use app::{App, Control, GameColor};
+use app::{App, Control, PlatformColor};
 
 struct ABgrColor {}
 
-impl GameColor for ABgrColor {
+impl PlatformColor for ABgrColor {
     fn from_rgbau32(rgba: u32) -> u32 {
         let r = rgba & 0xff000000;
         let g = rgba & 0x00ff0000;
@@ -36,16 +36,16 @@ pub extern "C" fn allocate_controls() -> *mut bool {
 }
 
 #[no_mangle]
-pub extern "C" fn allocate_game() -> *mut App {
-    let mut g = App::default();
-    let ret: *mut App = &mut g;
-    mem::forget(g);
+pub extern "C" fn allocate_app() -> *mut App {
+    let mut a = App::default();
+    let ret: *mut App = &mut a;
+    mem::forget(a);
     ret
 }
 
 #[no_mangle]
 pub extern "C" fn frame(
-    g_ptr: *mut App,
+    a_ptr: *mut App,
     image_ptr: *mut u32,
     width: usize,
     height: usize,
@@ -56,10 +56,10 @@ pub extern "C" fn frame(
 ) {
     let image_data = slice_from_raw_parts_mut(image_ptr, width * height);
     let keys_down = slice_from_raw_parts_mut(keys_down_ptr, Control::COUNT);
-    let g = unsafe { &mut (*g_ptr) };
+    let app = unsafe { &mut (*a_ptr) };
     unsafe {
         app::frame::<ABgrColor>(
-            g,
+            app,
             &mut (*image_data),
             width,
             height,

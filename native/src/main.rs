@@ -1,11 +1,11 @@
 use std::{collections::HashMap, time::Instant};
 
-use app::{App, Control, GameColor};
+use app::{App, Control, PlatformColor};
 use minifb::{Key, Window, WindowOptions};
 
 struct ARgbColor {}
 
-impl GameColor for ARgbColor {
+impl PlatformColor for ARgbColor {
     fn from_rgbau32(rgba: u32) -> u32 {
         let a = rgba & 0x000000ff;
         let ret = rgba >> 8;
@@ -27,9 +27,9 @@ pub fn main() {
     ]);
     let (mut width, mut height) = (WIDTH, HEIGHT);
     let mut buffer: Vec<u32> = vec![0; width * height];
-    let mut game = App::default();
+    let mut app = App::default();
     let mut window = Window::new(
-        "Snake",
+        "App",
         width,
         height,
         WindowOptions {
@@ -77,7 +77,7 @@ pub fn main() {
 
         // Logic
         app::frame::<ARgbColor>(
-            &mut game,
+            &mut app,
             buffer.as_mut_slice(),
             width,
             height,

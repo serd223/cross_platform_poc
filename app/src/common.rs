@@ -29,7 +29,7 @@ impl Control {
     pub const COUNT: usize = 7;
 }
 
-pub trait GameColor {
+pub trait PlatformColor {
     fn from_rgbau32(rgba: u32) -> u32;
 }
 #[derive(Clone, Copy)]
