@@ -6,6 +6,8 @@ const HEIGHT = 360;
   const wasm = await WebAssembly.instantiateStreaming(fetch("web.wasm"));
   const screenCanvas = document.getElementById("screen");
   if (screenCanvas === null) throw new Error("No canvas named 'screen' found.")
+  const canvas_offset_x = screenCanvas.offsetTop 
+  const canvas_offset_y = screenCanvas.offsetLeft
   screenCanvas.width = WIDTH;
   screenCanvas.height = HEIGHT;
   
@@ -52,7 +54,7 @@ const HEIGHT = 360;
   })
 
   addEventListener("keydown", (event) => {
-    console.log("KeyDown: ", event.keyCode);
+    // console.log("KeyDown: ", event.keyCode);
     for (var i = 0; i < controlCount; i++) {
       if (event.keyCode == controls[i]) {
         keysDown[i] = true
@@ -65,7 +67,7 @@ const HEIGHT = 360;
     mouse_y = event.clientY;
   })
   addEventListener("mousedown", (event) => {
-    console.log("MouseDown: ", event.buttons)
+    // console.log("MouseDown: ", event.buttons)
     if (event.buttons == 1) {
       keysDown[6] = true;
     } else {
@@ -73,7 +75,7 @@ const HEIGHT = 360;
     }
   })
   addEventListener("mouseup", (event) => {
-    console.log("MouseUp: ", event.buttons)
+    // console.log("MouseUp: ", event.buttons)
     if (event.buttons == 0) {
       keysDown[6] = false;
     }
@@ -88,7 +90,21 @@ const HEIGHT = 360;
         view.setUint8(keysDownPtr + i, keysDown[i])
       }
     }
-    frameWasm(gameDataPtr, imageDataPtr, WIDTH, HEIGHT, delta, keysDownPtr, mouse_x, mouse_y);
+    let offset_mouse_x = mouse_x - canvas_offset_x;
+    let offset_mouse_y = mouse_y - canvas_offset_y;
+    if (offset_mouse_x > WIDTH - 1) {
+      offset_mouse_x = WIDTH - 1
+    }
+    if (offset_mouse_x < 0) {
+      offset_mouse_x = 0
+    }
+    if (offset_mouse_y > HEIGHT - 1) {
+      offset_mouse_y = HEIGHT - 1
+    }
+    if (offset_mouse_y < 0) {
+      offset_mouse_y = 0
+    }
+    frameWasm(gameDataPtr, imageDataPtr, WIDTH, HEIGHT, delta, keysDownPtr, offset_mouse_x, offset_mouse_y);
     
     const data = new Uint8ClampedArray(wasmMemory.buffer, imageDataPtr, WIDTH * HEIGHT * 4);
     ctx.putImageData(new ImageData(data, WIDTH), 0, 0);  
