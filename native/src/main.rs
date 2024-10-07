@@ -1,6 +1,6 @@
 use std::{collections::HashMap, time::Instant};
 
-use game::{Controls, Game, GameColor};
+use app::{App, Control, GameColor};
 use minifb::{Key, Window, WindowOptions};
 
 struct ARgbColor {}
@@ -18,15 +18,16 @@ const WIDTH: usize = 640;
 const HEIGHT: usize = 360;
 pub fn main() {
     let controls = HashMap::from([
-        (Key::W, Controls::SnakeUp),
-        (Key::A, Controls::SnakeLeft),
-        (Key::S, Controls::SnakeDown),
-        (Key::D, Controls::SnakeRight),
-        (Key::Escape, Controls::Pause),
+        (Key::W, Control::Up),
+        (Key::A, Control::Left),
+        (Key::S, Control::Down),
+        (Key::D, Control::Right),
+        (Key::Escape, Control::Pause),
+        (Key::Space, Control::Restart),
     ]);
     let (mut width, mut height) = (WIDTH, HEIGHT);
     let mut buffer: Vec<u32> = vec![0; width * height];
-    let mut game = Game::default();
+    let mut game = App::default();
     let mut window = Window::new(
         "Snake",
         width,
@@ -39,7 +40,7 @@ pub fn main() {
     .unwrap_or_else(|e| {
         panic!("{}", e);
     });
-    let keys_down = &mut [false; Controls::COUNT];
+    let keys_down = &mut [false; Control::COUNT];
 
     let mut prev_time = Instant::now();
     window.set_target_fps(144);
@@ -66,7 +67,7 @@ pub fn main() {
                 }
             }
         }
-        game::frame::<ARgbColor>(
+        app::frame::<ARgbColor>(
             &mut game,
             buffer.as_mut_slice(),
             width,

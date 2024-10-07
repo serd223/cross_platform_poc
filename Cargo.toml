@@ -2,6 +2,6 @@
 members = [
   "native",
   "web",
-  "game",
+  "app",
 ]
 resolver = "2"

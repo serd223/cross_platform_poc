@@ -7,4 +7,4 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-game = { path = "../game" }
+app = { path = "../app" }

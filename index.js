@@ -26,15 +26,20 @@ const HEIGHT = 360;
   const imageDataPtr = allocateImage(WIDTH, HEIGHT);
   const keysDownPtr = allocateControls();
   const gameDataPtr = allocateGame();
-  var keysDown =    new Array(controlCount);
-  const controls  = {
-    0: 87, // W
-    1: 83, // S
-    2: 65, // A
-    3: 68, // D
-    4: 0
-  };
-
+  var keysDown = new Array(controlCount);
+  for (var i = 0; i < controlCount; i++) {
+    keysDown[i] = false;
+  }
+  let controls = {};
+  for (var i = 0; i < controlCount; i++) {
+    controls[i] = 0;
+  }
+  controls[0] = 87; // W
+  controls[1] = 83; // S
+  controls[2] = 65; // A
+  controls[3] = 68; // D
+  controls[4] = 27; // Escape
+  controls[5] = 32; // Space
   addEventListener("keyup", (event) => {
     for (var i = 0; i < controlCount; i++) {
       if (event.keyCode == controls[i]) {
@@ -44,7 +49,7 @@ const HEIGHT = 360;
   })
 
   addEventListener("keydown", (event) => {
-    // console.log('KeyDown: ', event.keyCode);
+    console.log('KeyDown: ', event.keyCode);
     for (var i = 0; i < controlCount; i++) {
       if (event.keyCode == controls[i]) {
         keysDown[i] = true

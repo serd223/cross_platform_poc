@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-game = { path = "../game" }
+app = { path = "../app" }
 minifb = "0.27.0"
