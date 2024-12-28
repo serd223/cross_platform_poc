@@ -60,8 +60,8 @@ impl Add for Vec2 {
 }
 
 #[derive(Clone, Copy)]
-pub struct Rgba(pub u32);
-impl framebrush::Color<u32> for Rgba {
+pub struct AppColor(pub u32);
+impl framebrush::Color<u32> for AppColor {
     fn pixel(&self, _buf: &mut [u32], _index: usize) -> u32 {
         self.0
     }

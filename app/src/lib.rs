@@ -40,7 +40,7 @@ impl Square {
     }
 }
 
-/// Do not construct `Rgba` directly with raw `rgba` data, instead use `C::from_rgbau32` to convert your data to the correct format.
+/// Do not construct `AppColor` directly with raw color data, instead use `C::from_rgbau32` to convert your data to the correct format.
 /// That is because different platforms have different pixel formats (`minifb` expects `argb` while the html canvas expects `abgr`).
 /// `C::from_rgbau32` returns data in the platforms expected pixel format. So, doing bitwise or arithmetical operations on
 /// returned data will most likely result in bugs.
@@ -54,7 +54,7 @@ pub fn frame<C: PlatformColor>(
     mouse_pos_x: f32,
     mouse_pos_y: f32,
 ) {
-    let bg = Rgba(C::from_rgbau32(0x282c34ff));
+    let bg = AppColor(C::from_rgbau32(0x282c34ff));
 
     let mut dir = Vec2 { x: 0., y: 0. };
     if app.prev_keys_down[Control::Pause as usize] && !keys_down[Control::Pause as usize] {
@@ -91,9 +91,9 @@ pub fn frame<C: PlatformColor>(
     }
 
     let color = if app.paused {
-        Rgba(C::from_rgbau32(0xff0000ff))
+        AppColor(C::from_rgbau32(0xff0000ff))
     } else {
-        Rgba(C::from_rgbau32(0x00ff00ff))
+        AppColor(C::from_rgbau32(0x00ff00ff))
     };
 
     let mut canvas = Canvas::new(buf, (width, height), (CANVAS_WIDTH, CANVAS_HEIGHT));
